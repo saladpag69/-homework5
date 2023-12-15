@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HomeWork5.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <table  class="">
+      <tr id="rowDisplay">
+        
+      </tr>
+    </table>
+    
+    <script>
+      let covidData = {
+        Country: [],
+        Death: [],
+      }
+
+      function getCovidDataCountry() {
+        axios
+          .get("https://covid19.ddc.moph.go.th/api/Cases/today-cases-all")
+          .then(function (response) {
+         
+            covidData.Country = response.data[0]
+          })
+      }
+
+      function getCovidDataDeath() {
+        axios
+        .get(
+          "https://covid19.ddc.moph.go.th/api/Deaths/weekly-deaths-line-lists"
+        )
+        .then(function (response) {
+          covidData.Death = response.data
+        })
+      }
+      
+
+      function getData(){
+
+        getCovidDataCountry()
+        getCovidDataDeath()
+        let rowDisplay = document.getElementById('rowDisplay');
+        let textHtml = '';
+       
+        textHtml += "<td class=''>" + 7
+          +"</td>";
+        rowDisplay.innerHTML = textHtml;
+      }
+
+      getData()
+
+      console.log(covidData["Country"])
+
+
+     
+    </script>
+  </body>
+</html>
