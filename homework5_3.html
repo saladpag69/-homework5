@@ -10,46 +10,89 @@
   <body>
     <script>
 
-        let user = {
-            "email": "eve.holt@reqres.in",
-            "password": "cityslicka"
-          }
-       
-          axios.post('https://reqres.in/api/login', user).then(function (response) {
-            console.log(response)
-          })   
+        // let user = {
+        //     "email": "eve.holt@reqres.in",
+        //     "password": "cityslicka"
+        //   }
+
+        //   axios.post('https://reqres.in/api/login', user).then(function (response) {
+        //     console.log(response)
+        //   })
 
 
       let aUser = []
       let  aLastName  = []
       function getUser(callback) {
         axios.get("https://reqres.in/api/users").then(function (response) {
-          console.log(response.data.data)
-          findSex(response.data.data.first_name)
-          findAge(response.data.data.first_name)
-          aLastName = response.lastName;
-          console.log(lastName)
-          callback()
+          let users = response.data.data3
+
+          /* ------------------------------------------------
+          NOTE: ทำตามโจทย์ที่ให้ console.log(last_name) ของ users
+          โดย .map() หรือ for loop หรือ while loop ก้ได้
+          1. วิธี .map() loop แบบย่อโคตรๆ
+          ------------------------------------------------ */
+
+          let lastName = users.map(user => user.last_name)
+          console.log('lastName', lastName)
+
+          /* ------------------------------------------------
+          2. วิธี for loop ธรรมดา
+          ------------------------------------------------ */
+
+          let loop_last_name = [];
+          let aUser = [];
+          for (let i = 0; i < users.length; i++) {
+            loop_last_name.push(users[i].last_name);
+            findGender(users[i])
+            findAge(users[i])
+            aUser.push(users[i]);
+          }
+          console.log('loop_last_name', loop_last_name)
+          console.log('aUser', aUser)
+
+          // findSex(response.data.data.first_name)
+          // findAge(response.data.data.first_name)
+          // aLastName = response.lastName;
+          // console.log(lastName)
+
+          /* ------------------------------------------------
+          NOTE: พี่ก็เอาข้อมูลที่เก็บใน aUser ไปสร้างตารางต่อได้ จิตขก.ละ 555
+          ------------------------------------------------ */
+
         })
       }
 
-      function findSex(first_name) {
-        axios.get("https://api.genderize.io?name={first_name}").then(function (response) {
-          console.log(response.data.data)
-          callback()
-        })
+      /* ------------------------------------------------
+        NOTE: ปกติถ้าจะรอ axios ตอบกลับว่า response ที่ได้คืออะไรต้องใช้
+        .then() จิตเปลี่ยนเป็นใช้งาน async await แทน อ่านง่ายกว่าเฉยๆ ค่า
+        ------------------------------------------------ */
+
+      let findGender = async(user) => {
+        console.log('user', user)
+        try {
+          let user_gender =  await axios.get(`https://api.genderize.io?name=${user.first_name}`)
+          user.gender = user_gender.data.gender
+        }catch(error) {
+          console.log('getting gender error', error)
+        }
       }
 
-      function findAge(first_name) {
-        axios.get("https://api.agify.io/?name={first_name} ").then(function (response) {
-          console.log(response.data.data)
-          callback()
-        })
+      let findAge = async(user) => {
+        try {
+          let user_age =  await axios.get(`https://api.agify.io/?name=${user.first_name}`)
+          user.age = user_age.data.age
+        }catch(error) {
+          console.log('getting age error', error)
+        }
       }
 
 
         getUser();
-      
+
+        /* ------------------------------------------------
+        NOTE: พี่ก็เอาข้อมูลมาแสดงผลต่อได้เลยใน function getUser
+        ------------------------------------------------ */
+
     </script>
   </body>
 </html>
